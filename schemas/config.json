@@ -1,0 +1,8 @@
+{
+  "storagePath": "./data",
+  "driveId": "NewsFeeds",
+  "refreshInterval": 3600000,
+  "feeds": [
+    "https://bitcoinmagazine.com/.rss/full/"
+  ]
+}

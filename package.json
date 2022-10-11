@@ -1,0 +1,18 @@
+{
+  "name": "slashtags-widget-news-feed",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sec/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@synonymdev/feeds": "^1.0.0-alpha.2",
+    "@synonymdev/slashtags-url": "^1.0.0-alpha.2",
+    "dayjs": "^1.11.5",
+    "rss-to-json": "^2.1.0"
+  }
+}
