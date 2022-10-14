@@ -1,0 +1,17 @@
+{
+    "name": "Bitcoin News",
+    "description": "Recent headlines about Bitcoin",
+    "icons": {
+        "48": "/images/news.svg",
+        "96": "/images/news.svg"
+    },
+    "type": "news.headlines",
+    "version": "0.0.1",
+    "fields": [
+        {
+            "name": "News",
+            "description": "Bitcoin News",
+            "main": "/feed/"
+        }
+    ]
+}
