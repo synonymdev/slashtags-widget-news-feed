@@ -113,9 +113,20 @@ export default class NewsFeed {
         const filename = `${headline.published} ${headline.title}`.toLowerCase().trim().replace(regex, '-')
         const key = path.join(Feeds.FEED_PREFIX, filename)
 
+        // Figure out time ranges to consider resonable
+        const now = dayjs()
+        const yearAgo = dayjs().subtract(1, 'year')
+        const nextMonth = dayjs().add(1, 'month')
+
         // Used to format the date into a human readable form
         const t = dayjs(+headline.published)
         const displayDate = t.format('ddd D MMM YYYY, h:mma (Z)')
+
+        // See if the article date is way off (mostly to catch bad dates to be honest)
+        if (t.isBefore(yearAgo) || t.isAfter(nextMonth)) {
+            console.log(`Date of headline outside reasonable timescale: ${displayDate} ${filename}`)
+            return
+        }
 
         // Prepare the content of the file
         const content = {
