@@ -28,6 +28,35 @@ class CustomFeeds extends Feeds {
         await batch.flush()
         return true
     }
+
+    /**
+     * Deletes an old file that is not needed any more
+     * @param {} feedID 
+     * @param {*} key 
+     */
+    async deleteFile(feedID, key) {
+        const drive = await this._drive(feedID)
+        const batch = drive.batch()
+        await batch.del(key)
+        await batch.flush()
+    }
+
+    /**
+     * Debug the content of the drive
+     * @param {*} feedID 
+     */
+    async logFiles(feedID) {
+        const drive = await this._drive(feedID)
+        const files = await drive.readdir('/feed')
+
+        files.on('data', function (data) {
+            console.log(data)
+        })
+
+        files.on('end', function () {
+            console.log('end')
+        })
+    }
 }
 
 
@@ -113,9 +142,22 @@ export default class NewsFeed {
         const filename = `${headline.published} ${headline.title}`.toLowerCase().trim().replace(regex, '-')
         const key = path.join(Feeds.FEED_PREFIX, filename)
 
+        // Figure out time ranges to consider resonable
+        const now = dayjs()
+        const yearAgo = dayjs().subtract(1, 'year')
+        const nextMonth = dayjs().add(1, 'month')
+
         // Used to format the date into a human readable form
         const t = dayjs(+headline.published)
         const displayDate = t.format('ddd D MMM YYYY, h:mma (Z)')
+
+        // See if the article date is way off (mostly to catch bad dates to be honest)
+        if (t.isBefore(yearAgo) || t.isAfter(nextMonth)) {
+            console.log(`Date of headline outside reasonable timescale: ${displayDate} ${filename}`)
+            await this.feedStorage.deleteFile(this.driveId, key)
+
+            return
+        }
 
         // Prepare the content of the file
         const content = {
