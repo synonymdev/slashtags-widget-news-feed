@@ -1,6 +1,6 @@
 {
     "name": "Bitcoin Headlines",
-    "description": "Recent headlines about Bitcoin",
+    "description": "Read the latest & greatest Bitcoin headlines from various news sites.",
     "icons": {
         "48": "/images/news.svg",
         "96": "/images/news.svg"
