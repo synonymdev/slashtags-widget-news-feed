@@ -6,7 +6,6 @@ import Feeds from '@synonymdev/feeds'
 import { format, encode } from '@synonymdev/slashtags-url'
 import logger from './logger.js'
 
-
 export default class NewsFeed {
     constructor(config, schema) {
         this.config = config
@@ -69,7 +68,7 @@ export default class NewsFeed {
                 }
 
                 // and ensure all the headlines are up to date
-                // Searlise this, so we only update one at a time
+                // Serialize this, so we only update one at a time
                 for (const item of headlines.items) {
                     await this.ensureHeadline(item, publisher)
                 }
@@ -91,8 +90,8 @@ export default class NewsFeed {
 
         // Figure out time ranges to consider resonable
         const now = dayjs()
-        const yearAgo = dayjs().subtract(1, 'year')
-        const nextMonth = dayjs().add(1, 'month')
+        const yearAgo = now.subtract(1, 'year')
+        const nextMonth = now.add(1, 'month')
 
         // Used to format the date into a human readable form
         const t = dayjs(+headline.published)
