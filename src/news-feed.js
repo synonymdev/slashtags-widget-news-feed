@@ -68,7 +68,7 @@ export default class NewsFeed {
                 }
 
                 // and ensure all the headlines are up to date
-                // Serialize this, so we only update one at a time
+                // Serialise this, so we only update one at a time
                 for (const item of headlines.items) {
                     await this.ensureHeadline(item, publisher)
                 }
@@ -89,9 +89,8 @@ export default class NewsFeed {
         const key = path.join(Feeds.FEED_PREFIX, filename)
 
         // Figure out time ranges to consider resonable
-        const now = dayjs()
-        const yearAgo = now.subtract(1, 'year')
-        const nextMonth = now.add(1, 'month')
+        const yearAgo = dayjs().subtract(1, 'year')
+        const nextMonth = dayjs().add(1, 'month')
 
         // Used to format the date into a human readable form
         const t = dayjs(+headline.published)
