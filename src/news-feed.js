@@ -6,7 +6,6 @@ import Feeds from '@synonymdev/feeds'
 import { format, encode } from '@synonymdev/slashtags-url'
 import logger from './logger.js'
 
-
 export default class NewsFeed {
     constructor(config, schema) {
         this.config = config
