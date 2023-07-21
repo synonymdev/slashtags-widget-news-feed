@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import dayjs from 'dayjs'
-import rss from 'rss-to-json'
+import RssParser from 'rss-parser'
 import Feeds from '@synonymdev/feeds'
 import { format, encode } from '@synonymdev/slashtags-url'
 import logger from './logger.js'
@@ -58,13 +58,18 @@ export default class NewsFeed {
         for (const rssUrl of this.config.feeds) {
             try {
                 logger.info(`Processing ${rssUrl} for new headlines...`)
-                const headlines = await rss.parse(rssUrl)
+                const parser = new RssParser({
+                    customFields: {
+                        item: ['media:content'],
+                    },
+                })
+                const headlines = await parser.parseURL(rssUrl)
 
                 // Grab all the publisher data from the feed
                 const publisher = {
                     title: headlines.title,
                     link: headlines.link,
-                    image: headlines.image
+                    image: headlines.image?.url,
                 }
 
                 // and ensure all the headlines are up to date
@@ -84,22 +89,20 @@ export default class NewsFeed {
 
     async ensureHeadline(headline, publisher) {
         // Generate a filename for the headline
-        const regex = /[^a-z0-9]+/gi;
-        const filename = `${headline.published} ${headline.title}`.toLowerCase().trim().replace(regex, '-')
+        const regex = /[^a-z0-9]+/gi
+        const filename = `${headline.isoDate} ${headline.title}`.toLowerCase().trim().replace(regex, '-')
         const key = path.join(Feeds.FEED_PREFIX, filename)
 
         // Figure out time ranges to consider resonable
-        const now = dayjs()
         const yearAgo = dayjs().subtract(1, 'year')
         const nextMonth = dayjs().add(1, 'month')
 
         // Used to format the date into a human readable form
-        const t = dayjs(+headline.published)
-        const displayDate = t.format('ddd D MMM YYYY, h:mma (Z)')
+        const t = dayjs(headline.isoDate)
 
         // See if the article date is way off (mostly to catch bad dates to be honest)
         if (t.isBefore(yearAgo) || t.isAfter(nextMonth)) {
-            console.log(`Date of headline outside reasonable timescale: ${displayDate} ${filename}`)
+            console.log(`Date of headline outside reasonable timescale: ${headline.pubDate} ${filename}`)
             await this.feedStorage.deleteFile(this.driveId, key)
 
             return
@@ -108,20 +111,21 @@ export default class NewsFeed {
         // Prepare the content of the file
         const content = {
             title: headline.title,
-            published: +headline.published,
-            publishedDate: displayDate,
+            published: headline.isoDate,
+            publishedDate: headline.pubDate,
             link: headline.link,
-            author: headline.author,
-            category: headline.category,
-            thumbnail: headline.media?.thumbnail?.url,
-            publisher
+            comments: headline.comments,
+            author: headline.creator,
+            categories: headline.categories,
+            thumbnail: headline['media:content']?.$?.url,
+            publisher,
         }
 
         // Ensure that the file exists and is up to date
         const data = Buffer.from(JSON.stringify(content))
         const updated = await this.feedStorage.ensureFile(this.driveId, key, data)
         if (updated) {
-            logger.info(`  ${displayDate} - ${headline.title}`)
+            logger.info(`  ${headline.pubDate} - ${headline.title}`)
         }
     }
 }
