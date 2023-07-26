@@ -13,9 +13,7 @@ module.exports = {
             min_uptime: '5s',
             max_restarts: 10,
             kill_timeout: 30000,
-            args: [
-                '--color',
-            ],
+            args: ['--color'],
         },
     ],
-};
+}
