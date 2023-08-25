@@ -73,7 +73,7 @@ export default class NewsFeed {
                 }
 
                 // and ensure all the headlines are up to date
-                // Searlise this, so we only update one at a time
+                // Serialise this, so we only update one at a time
                 for (const item of headlines.items) {
                     await this.ensureHeadline(item, publisher)
                 }
