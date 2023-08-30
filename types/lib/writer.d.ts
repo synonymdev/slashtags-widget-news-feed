@@ -38,6 +38,11 @@ type Article = {
     title: string;
     link: string;
     published: number;
+    publishedDate: string;
+    comments: string;
+    author: string;
+    categories: string[];
+    thumbnail: string;
     publisher: {
         title: string;
         link: string;
