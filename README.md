@@ -1,19 +1,51 @@
 # slashtags-widget-news-feed
 
 A slashtags widget with recent news.
-Each news headline is stored in the feeds folder in a separate file. Sort the files by creation timestamp to get the headlines in order.
 
-Each file contains the following json...
+## Usage
 
+### Feed
+
+Copy `config/config.example.json` to `config/config.json` then edit the relay address.
+
+```bash
+cp config/config.example.json config/config.json
 ```
-{
-    title: "the headline"
-    published: <published timestamp>,
-    publishedDate: "<published date as text>",
-    link: "<link to article>",
-    author: "headline author",
-    category: [ <list of categories> ],
-    thumbnail: "<optional url of a thumbnail image for the article>",
-    publisher: "<publisher of the article>"
-}
+
+Start the feed writer
+
+```bash
+npm start
+```
+
+It will generate a `keyPair` and persist that in `config/config.json` for future sessions.
+
+It should print: `Running Bitcoin news feed: slashfeed:<id>/Bitcoin Headlines?relay=<relay-address>`
+
+### Reader
+
+To read The news feed use the `Reader` helper class.
+
+```js
+const { Feed, Reader } = require('slashtags-widget-news-feed')
+
+(async () => {
+  const client = new Client({ storage: './path/to/feed/storage', relay: 'https://web-relay.example.com' })
+  const feed = new Feed(client, config, { icon })
+
+  await feed.ready() 
+
+  const client = new Client({ storage: './path/to/reader/storage'})
+
+  const readerClient = new Client({ storage: tmpdir() })
+  const reader = new Reader(readerClient, feed.url)
+
+  const latestArticle = await reader.getLatestArticle()
+  // {
+  //   title: 'Article Title',
+  //   link: 'https://example.com/article-x',
+  //   published: 1692255625871,
+  //   publisher: { title: 'Feed Bar', link: 'bar.example.com' }
+  // }
+})
 ```

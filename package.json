@@ -1,22 +1,33 @@
 {
   "name": "slashtags-widget-news-feed",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "",
-  "main": "src/index.js",
-  "type": "module",
+  "main": "index.js",
+  "types": "types/index.d.ts",
   "scripts": {
-    "start": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin.js",
+    "test": "brittle test/*.js -cov",
+    "lint": "standard --fix --ignore example/*",
+    "build": "rm -rf types && tsc",
+    "fullcheck": "npm run lint && npm run build && npm run test",
+    "prepublishOnly": "npm run fullcheck"
   },
-  "author": "",
   "license": "MIT",
+  "files": [
+    "index.js",
+    "lib",
+    "types",
+    "!**/*.tsbuildinfo"
+  ],
   "dependencies": {
-    "@synonymdev/feeds": "^1.0.0-alpha.5",
-    "@synonymdev/slashtags-url": "^1.0.0-alpha.2",
-    "dayjs": "^1.11.5",
+    "@synonymdev/feeds": "github:synonymdev/slashtags-feeds#next",
     "rss-parser": "^3.13.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@synonymdev/web-relay": "github:slashtags/web-relay#react-native",
+    "@types/node": "^20.4.9",
+    "brittle": "^3.3.2",
+    "standard": "^17.1.0",
+    "typescript": "^5.1.6"
   }
 }
