@@ -9,7 +9,7 @@ declare class NewsFeedReader extends Reader {
      *
      * @returns {Promise<Article | null>}
      */
-    getLatestArtible(): Promise<Article | null>;
+    getLatestArticle(): Promise<Article | null>;
 }
 declare namespace NewsFeedReader {
     export { Article };

@@ -59,7 +59,7 @@ test('immediate update', async (t) => {
   t.alike(await reader.getConfig(), config)
   t.alike(await reader.getIcon(), icon)
 
-  const latestArticle = await reader.getLatestArtible()
+  const latestArticle = await reader.getLatestArticle()
 
   t.alike(latestArticle, {
     title: 'Bar Article 2',
